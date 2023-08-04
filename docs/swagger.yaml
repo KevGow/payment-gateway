@@ -1,0 +1,114 @@
+basePath: /
+definitions:
+  api.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  api.GetResponse:
+    properties:
+      amount:
+        example: 100
+        type: number
+      bank-payment-status:
+        example: Success
+        type: string
+      card-number-masked:
+        example: '****5070'
+        type: string
+      currency:
+        example: GBP
+        type: string
+      expiry-date:
+        example: 11/26
+        type: string
+    type: object
+  api.PostJsonRequest:
+    properties:
+      amount:
+        example: 100
+        type: number
+      card-number:
+        example: 4032 0341 3083 5070
+        type: string
+      currency:
+        example: GBP
+        type: string
+      cvv:
+        example: "975"
+        type: string
+      expiry-date:
+        example: 11/26
+        type: string
+    required:
+    - amount
+    - card-number
+    - currency
+    - cvv
+    - expiry-date
+    type: object
+  api.PostResponse:
+    properties:
+      uuid:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple Payment Gateway API for the ProcessOut take-home technical
+    assessment.
+  title: Payment Gateway API
+  version: "1.0"
+paths:
+  /findpayment/{uuid}:
+    get:
+      description: Get payment information by UUID
+      operationId: get-payment-by-uuid
+      parameters:
+      - description: Payment UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.GetResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get payment information by UUID
+  /pay:
+    post:
+      consumes:
+      - application/json
+      description: Make a payment
+      operationId: make-payment
+      parameters:
+      - description: Payment Data
+        in: body
+        name: paymentData
+        required: true
+        schema:
+          $ref: '#/definitions/api.PostJsonRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.PostResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Make a payment
+swagger: "2.0"
